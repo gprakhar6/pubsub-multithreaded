@@ -46,7 +46,7 @@ int main()
     pthread_t tid1,tid2;
     init_pubsub();
     t = allocate_topic("data", sizeof(d), 1000);
-    s = allocate_subscriber("data", RESET_TO_FIRST_VALUE);
+    s = allocate_subscriber("data", RESET_TO_LAST_VALUE);
 
     pthread_create(&tid1, NULL, publisher, NULL);
     pthread_create(&tid1, NULL, poller, NULL);

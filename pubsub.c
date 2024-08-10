@@ -198,8 +198,8 @@ int poll_data(void *d, subscriber_t *s)
     if(s != NULL) {
 	t = s->topic_ptr;
     get_data:
-	__sync_synchronize();
 	diff1 = t->pub_count1 - s->next_rd_count;
+	__sync_synchronize();
 	if(diff1 <= t->num_elem) {
 	    if(diff1 > 0) {
 		memcpy(d, &TOPIC_DATA(t, s->tail_ptr), t->elem_sz);
