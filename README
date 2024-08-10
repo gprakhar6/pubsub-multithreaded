@@ -1,0 +1,8 @@
+
+* call init_pubsub at start to initialize the pubsub
+
+* use allocate_topic to allocate topic
+* use allocate_subscriber to allocate subscriber
+* pub_data to publish data
+* poll_data to poll the data
+
