@@ -1,2 +1,2 @@
 all:
-	gcc *.c -o main -lpthread
+	gcc *.c -Wall -Wextra -o main -lpthread

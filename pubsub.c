@@ -7,24 +7,24 @@
 #define LEN(x) sizeof(x)/sizeof(x[0])
 
 topic_t topics[MAX_NUM_TOPIC];
-uint32_t head_free_topic;
-uint32_t head_topic;
+uint16_t head_free_topic;
+uint16_t head_topic;
 
 subscriber_t subscribers[MAX_NUM_SUBSCRIBER];
-uint32_t head_free_subscriber;
+uint16_t head_free_subscriber;
 
 uint8_t mem_pool[MAX_MEM_POOL];
 uint32_t pool_idx;
 
 void init_pubsub()
 {
-    int i;
+    size_t i;
     topics[0].next_free_topic = -1;
     for(i = 1; i < LEN(topics); i++) {
 	topics[i].next_free_topic = i - 1;
     }
     head_free_topic = LEN(topics) - 1;
-    head_topic = -1;
+    head_topic = (uint16_t)-1;
     
     subscribers[0].next_free_subscriber = -1;
     for(i = 1; i < LEN(subscribers); i++) {
@@ -38,7 +38,7 @@ void init_pubsub()
 static int new_topic(topic_t **topic)
 {
     int fail = 1;
-    if(head_free_topic != -1) {
+    if(head_free_topic != (uint16_t)-1) {
 	*topic = &topics[head_free_topic];
 	(*topic)->next_topic = head_topic;
 	head_topic = head_free_topic;
@@ -70,7 +70,7 @@ static int free_topic(topic_t *topic)
 topic_t* iterate_topic(uint32_t *head)
 {
     topic_t *t = NULL;
-    if(*head != -1) {
+    if(*head != (uint16_t)-1) {
 	t = &topics[*head];
 	*head = t->next_topic;
     }
@@ -80,7 +80,7 @@ topic_t* iterate_topic(uint32_t *head)
 static int new_subscriber(subscriber_t **subscriber)
 {
     int fail = 1;
-    if(head_free_subscriber != -1) {
+    if(head_free_subscriber != (uint16_t)-1) {
 	*subscriber = &subscribers[head_free_subscriber];
 	head_free_subscriber
 	    = subscribers[head_free_subscriber].next_free_subscriber;
@@ -116,7 +116,8 @@ uint8_t* simple_calloc(uint32_t num_elem, uint32_t elem_sz)
     return addr;
 }
 
-void simple_free(uint8_t *addr) {
+void simple_free(uint8_t *addr)
+{
     return;
 }
 

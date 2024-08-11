@@ -18,8 +18,8 @@ typedef struct {
     volatile uint64_t pub_count0;
     volatile uint64_t pub_count1;
     /******************/
-    uint32_t next_topic;
-    uint32_t next_free_topic;
+    uint16_t next_topic;
+    uint16_t next_free_topic;
 } topic_t;
 
 typedef enum {
@@ -34,8 +34,8 @@ typedef struct {
     uint64_t next_rd_count;
     reset_pos_t rst_pos;
     /******************/
-    uint32_t next_subscriber;
-    uint32_t next_free_subscriber;
+    uint16_t next_subscriber;
+    uint16_t next_free_subscriber;
 } subscriber_t;
 
 void init_pubsub();
