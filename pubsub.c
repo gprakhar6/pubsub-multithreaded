@@ -204,18 +204,17 @@ int poll_data(void *d, subscriber_t *s)
 	    goto ret;
 	}
 	diff1 = t->pub_count1 - s->next_rd_count;
-	__sync_synchronize();
 	if(diff1 <= t->num_elem) {
 	    if(diff1 > 0) {
+		__sync_synchronize();
 		memcpy(d, &TOPIC_DATA(t, s->tail_ptr), t->elem_sz);
 		__sync_synchronize();
 		diff0 = t->pub_count0 - s->next_rd_count;
 		if (diff1 <= t->num_elem) {
 		    if((diff1 == diff0) || (diff0 < t->num_elem)) {
 			s->tail_ptr++;
-			if(s->tail_ptr >= t->num_elem) {
+			if(s->tail_ptr >= t->num_elem)
 			    s->tail_ptr = 0;
-			}
 			s->next_rd_count++;
 			fail = 0;
 		    }
