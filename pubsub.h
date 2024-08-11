@@ -23,8 +23,8 @@ typedef struct {
 } topic_t;
 
 typedef enum {
-    RESET_TO_LAST_VALUE, // with this sub will get most old data
-    RESET_TO_FIRST_VALUE, // with this sub will get most new data
+    RESET_TO_TAIL_VALUE, // with this sub will get most old data
+    RESET_TO_HEAD_VALUE, // with this sub will get most new data
     RESET_TO_NEW_VALUE // with this sub will get next new data
 } reset_pos_t;
 

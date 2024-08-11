@@ -231,7 +231,7 @@ static int check_data(void *d, subscriber_t *s, int pop_data)
 	else {
 	reset_pos:
 	    switch(s->rst_pos) {
-	    case RESET_TO_LAST_VALUE:
+	    case RESET_TO_TAIL_VALUE:
 		do {
 		    diff1 = t->pub_count1 - t->num_elem;
 		    __sync_synchronize();
@@ -241,7 +241,7 @@ static int check_data(void *d, subscriber_t *s, int pop_data)
 		} while(diff1 != diff0);
 		s->next_rd_count = diff1;
 		break;
-	    case RESET_TO_FIRST_VALUE:
+	    case RESET_TO_HEAD_VALUE:
 		do {
 		    diff1 = t->pub_count1 - 1;
 		    __sync_synchronize();
