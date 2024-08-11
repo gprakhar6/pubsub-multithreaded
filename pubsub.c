@@ -190,7 +190,7 @@ void pub_data(void *d, topic_t *t)
     }
 }
 
-int poll_data(void *d, subscriber_t *s)
+static int check_data(void *d, subscriber_t *s, int pop_data)
 {
     topic_t *t;
     uint64_t diff0, diff1;
@@ -204,27 +204,29 @@ int poll_data(void *d, subscriber_t *s)
 	    goto ret;
 	}
 	diff1 = t->pub_count1 - s->next_rd_count;
+	if(diff1 == 0)
+	    goto ret;
 	if(diff1 <= t->num_elem) {
-	    if(diff1 > 0) {
-		__sync_synchronize();
-		memcpy(d, &TOPIC_DATA(t, s->tail_ptr), t->elem_sz);
-		__sync_synchronize();
-		diff0 = t->pub_count0 - s->next_rd_count;
-		if (diff1 <= t->num_elem) {
-		    if((diff1 == diff0) || (diff0 < t->num_elem)) {
+	    __sync_synchronize();
+	    memcpy(d, &TOPIC_DATA(t, s->tail_ptr), t->elem_sz);
+	    __sync_synchronize();
+	    diff0 = t->pub_count0 - s->next_rd_count;
+	    if (diff1 <= t->num_elem) {
+		if((diff1 == diff0) || (diff0 < t->num_elem)) {
+		    if(pop_data) {
 			s->tail_ptr++;
 			if(s->tail_ptr >= t->num_elem)
 			    s->tail_ptr = 0;
 			s->next_rd_count++;
-			fail = 0;
 		    }
-		    else {
-			goto get_data;
-		    }
+		    fail = 0;
 		}
-		else
-		    goto reset_pos;
+		else {
+		    goto get_data;
+		}
 	    }
+	    else
+		goto reset_pos;
 	}
 	else {
 	reset_pos:
@@ -277,6 +279,14 @@ ret:
     return fail;
 }
 
+int poll_data(void *d, subscriber_t *s)
+{
+    return check_data(d, s, 1);
+}
+int peek_data(void *d, subscriber_t *s)
+{
+    return check_data(d, s, 0);
+}
 void list_all_topics()
 {
     uint32_t iter;

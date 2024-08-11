@@ -45,5 +45,5 @@ subscriber_t* allocate_subscriber(char *name, reset_pos_t rst_pos);
 void list_all_topics();
 void pub_data(void *d, topic_t *t);
 int poll_data(void *d, subscriber_t *s);
-
+int peek_data(void *d, subscriber_t *s);
 #endif
