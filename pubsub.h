@@ -6,8 +6,8 @@
 #define MAX_TOPIC_NAME_LEN (64)
 #define MAX_NUM_TOPIC (128)
 #define MAX_NUM_SUBSCRIBER (512)
-#define MAX_MEM_POOL (64 * 1024)
-
+#define MAX_MEM_POOL (4 * 1024 * 1024)
+#define MAX_POLL_DATA_RETIRES 100000
 
 typedef struct {
     char name[MAX_TOPIC_NAME_LEN];

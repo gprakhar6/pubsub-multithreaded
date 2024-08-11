@@ -195,9 +195,14 @@ int poll_data(void *d, subscriber_t *s)
     topic_t *t;
     uint64_t diff0, diff1;
     int fail = 1;
+    uint64_t retry_count = 0;
     if(s != NULL) {
 	t = s->topic_ptr;
     get_data:
+	if(++retry_count > MAX_POLL_DATA_RETIRES) {
+	    fail = 2;
+	    goto ret;
+	}
 	diff1 = t->pub_count1 - s->next_rd_count;
 	__sync_synchronize();
 	if(diff1 <= t->num_elem) {
@@ -206,7 +211,7 @@ int poll_data(void *d, subscriber_t *s)
 		__sync_synchronize();
 		diff0 = t->pub_count0 - s->next_rd_count;
 		if (diff1 <= t->num_elem) {
-		    if((diff1 == diff0)) {
+		    if((diff1 == diff0) || (diff0 < t->num_elem)) {
 			s->tail_ptr++;
 			if(s->tail_ptr >= t->num_elem) {
 			    s->tail_ptr = 0;
@@ -269,6 +274,7 @@ int poll_data(void *d, subscriber_t *s)
 	    goto get_data;
 	}
     }
+ret:
     return fail;
 }
 
